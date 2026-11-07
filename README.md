@@ -80,12 +80,12 @@ Why `/opt`:
 
 ## Quick Start
 
-### 1. Prepare `/opt` and clone/copy the repository
+### 1. Prepare `/opt` and clone the repository
 
 ```bash
 sudo mkdir -p /opt/traefik
 sudo chown "$USER":"$USER" /opt/traefik
-git clone <YOUR_REPOSITORY_URL> /opt/traefik
+git clone https://github.com/abdalazeim/InstallingTraefik-Docker-Deployment.git /opt/traefik
 cd /opt/traefik
 ```
 

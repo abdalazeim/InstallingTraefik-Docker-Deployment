@@ -38,10 +38,10 @@ sudo ss -tulpn | grep -E ':80|:443|:8080' || true
 sudo mkdir -p /opt/traefik
 sudo chown "$USER":"$USER" /opt/traefik
 
-# الخيار أ: استنساخ المستودع مباشرة إلى /opt/traefik
-git clone <رابط-المستودع> /opt/traefik
+# استنساخ المستودع مباشرة إلى /opt/traefik
+git clone https://github.com/abdalazeim/InstallingTraefik-Docker-Deployment.git /opt/traefik
 
-# الخيار ب: إذا كانت الملفات موجودة محليًا، انسخها إلى /opt/traefik
+# بديل: إذا كانت الملفات موجودة محليًا، انسخها إلى /opt/traefik
 # sudo rsync -a --exclude '.git' ./ /opt/traefik/
 # sudo chown -R "$USER":"$USER" /opt/traefik
 
