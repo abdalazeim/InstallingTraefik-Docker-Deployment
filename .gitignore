@@ -1,0 +1,35 @@
+# Ignore all directories, and all sub-directories, and it's contents:
+*/*
+.bash_history
+.bash_logout
+.bashrc
+.gitconfig
+.profile
+.sudo_as_admin_successful
+.wget-hsts
+atlas-discord-relay/
+chatbot-ui/
+code/
+create_docker_compose_basic_auth_string_for_traefik.sh
+docker-code-server/
+docker-pod/
+gcc-12.2.0.tar.gz
+gpt4all/
+home-management-hub/
+mission-control/
+obsidian-server/
+obsidian-vectordb/
+portainer/
+pvpgn/
+quivr/
+re-universe/
+templates/
+variables.env
+# Runtime logs
+7dtd-start.log
+# Machine-local Claude Code config (contains account metadata)
+.claude.json
+# Environment files with secrets
+.env
+.env.*
+!.env.example
