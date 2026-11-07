@@ -449,7 +449,7 @@ services:
 
   # Budget - Actual Budget, self-hosted personal finance manager
   budget:
-    image: ghcr.io/bethington/budget:latest
+    image: ghcr.io/actualbudget/actual:latest
     container_name: budget
     restart: unless-stopped
     volumes:
