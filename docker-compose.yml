@@ -130,7 +130,7 @@ services:
 
   # VS Code Server - Web-based VS Code for development projects with Node.js and Claude Code
   code:
-    image: custom-code-server:latest
+    image: lscr.io/linuxserver/code-server:latest
     container_name: code
     hostname: code
     restart: unless-stopped
@@ -167,7 +167,7 @@ services:
 
   # VS Code Server cod1 - Web-based VS Code for development projects
   cod1:
-    image: custom-code-server:latest
+    image: lscr.io/linuxserver/code-server:latest
     container_name: cod1
     hostname: cod1
     restart: unless-stopped
@@ -204,7 +204,7 @@ services:
 
   # VS Code Server vs1 - Web-based VS Code for development projects
   vs1:
-    image: custom-code-server:latest
+    image: lscr.io/linuxserver/code-server:latest
     container_name: vs1
     hostname: vs1
     restart: unless-stopped
@@ -241,7 +241,7 @@ services:
 
   # VS Code Server vs2 - Web-based VS Code for development projects
   vs2:
-    image: custom-code-server:latest
+    image: lscr.io/linuxserver/code-server:latest
     container_name: vs2
     hostname: vs2
     restart: unless-stopped
@@ -278,7 +278,7 @@ services:
 
   # VS Code Server vs3 - Web-based VS Code for development projects
   vs3:
-    image: custom-code-server:latest
+    image: lscr.io/linuxserver/code-server:latest
     container_name: vs3
     hostname: vs3
     restart: unless-stopped
@@ -315,7 +315,7 @@ services:
 
   # VS Code Server vs4 - Web-based VS Code for development projects
   vs4:
-    image: custom-code-server:latest
+    image: lscr.io/linuxserver/code-server:latest
     container_name: vs4
     hostname: vs4
     restart: unless-stopped
@@ -351,7 +351,7 @@ services:
       - "traefik.http.routers.vs4-http.middlewares=redirect-to-https@file"
 
   dd2docs:
-    image: custom-code-server:latest
+    image: lscr.io/linuxserver/code-server:latest
     container_name: dd2docs
     hostname: dd2docs
     restart: unless-stopped
