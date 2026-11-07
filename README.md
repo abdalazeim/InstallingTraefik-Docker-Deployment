@@ -51,7 +51,7 @@ Verify:
 
 ```bash
 docker --version
-docker compose version
+sudo docker compose version
 sudo ss -tulpn | grep -E ':80|:443|:8080' || true
 ```
 
@@ -134,7 +134,7 @@ Services that should be routed by Traefik usually attach to a shared external
 network:
 
 ```bash
-docker network create proxy || true
+sudo docker network create proxy || true
 ```
 
 Use the same network name in service labels and Compose files (`proxy` by default in
@@ -153,9 +153,9 @@ Then start:
 
 ```bash
 cd /opt/traefik
-docker compose pull
-docker compose up -d
-docker compose ps
+sudo docker compose pull
+sudo docker compose up -d
+sudo docker compose ps
 ```
 
 ## Configuration
@@ -191,12 +191,12 @@ Run commands from `/opt/traefik`:
 
 ```bash
 cd /opt/traefik
-docker compose ps
-docker compose logs -f traefik
-docker compose pull
-docker compose up -d
-docker compose restart traefik
-docker compose down
+sudo docker compose ps
+sudo docker compose logs -f traefik
+sudo docker compose pull
+sudo docker compose up -d
+sudo docker compose restart traefik
+sudo docker compose down
 ```
 
 Back up at minimum:
@@ -231,7 +231,7 @@ Useful commands:
 
 ```bash
 cd /opt/traefik
-docker compose logs --tail=200 traefik
-docker network inspect proxy
-docker compose config
+sudo docker compose logs --tail=200 traefik
+sudo docker network inspect proxy
+sudo docker compose config
 ```
