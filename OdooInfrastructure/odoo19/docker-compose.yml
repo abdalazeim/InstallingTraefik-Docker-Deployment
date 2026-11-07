@@ -1,0 +1,88 @@
+# Odoo 19 stack for Traefik (no host ports published)
+# Uses detected style from existing project: odoo:19 + postgres:18.
+# Start after Traefik is running and on the same external proxy network.
+# From this folder: docker compose --env-file ../.env up -d
+
+services:
+  db19:
+    image: ${PG19_IMAGE:-postgres:18}
+    container_name: odoo19-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${ODOO19_DB_USER:-odoo19}
+      POSTGRES_PASSWORD: ${ODOO19_DB_PASSWORD:?Set ODOO19_DB_PASSWORD in ../.env}
+      POSTGRES_DB: ${ODOO19_DB_NAME:-postgre}
+    volumes:
+      # Persistent PostgreSQL data (named volume; survives container recreation)
+      - odoo19_db:/var/lib/postgresql/data
+    networks:
+      - internal19
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  odoo19:
+    image: ${ODOO19_IMAGE:-odoo:19}
+    container_name: odoo19
+    depends_on:
+      db19:
+        condition: service_healthy
+    restart: unless-stopped
+    command: ["--config=/tmp/odoo.conf"]
+    environment:
+      HOST: db19
+      PORT: "5432"
+      USER: ${ODOO19_DB_USER:-odoo19}
+      PASSWORD: ${ODOO19_DB_PASSWORD:?Set ODOO19_DB_PASSWORD in ../.env}
+      ODOO_ADMIN_PASSWORD: ${ODOO19_ADMIN_PASSWORD:?Set ODOO19_ADMIN_PASSWORD in ../.env}
+      # Odoo behind Traefik must trust proxy headers
+      ODOO_PROXY_MODE: "True"
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh:ro
+      - ./config:/etc/odoo:ro
+      - ./addons:/mnt/extra-addons
+      - odoo19_data:/var/lib/odoo
+    networks:
+      - internal19
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-proxy}"
+      # HTTPS router (web)
+      - "traefik.http.routers.odoo19.rule=Host(`${ODOO19_DOMAIN:-odoo19.devops-odoo.com}`)"
+      - "traefik.http.routers.odoo19.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}"
+      - "traefik.http.routers.odoo19.tls=true"
+      - "traefik.http.routers.odoo19.tls.certresolver=${CERTSRESOLVER:-le}"
+      - "traefik.http.routers.odoo19.service=odoo19"
+      - "traefik.http.services.odoo19.loadbalancer.server.port=8069"
+      # WebSocket / longpolling
+      - "traefik.http.routers.odoo19-ws.rule=Host(`${ODOO19_DOMAIN:-odoo19.devops-odoo.com}`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.odoo19-ws.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}"
+      - "traefik.http.routers.odoo19-ws.tls=true"
+      - "traefik.http.routers.odoo19-ws.tls.certresolver=${CERTSRESOLVER:-le}"
+      - "traefik.http.routers.odoo19-ws.priority=100"
+      - "traefik.http.routers.odoo19-ws.service=odoo19-ws"
+      - "traefik.http.services.odoo19-ws.loadbalancer.server.port=8072"
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8069/web/login', timeout=5)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+networks:
+  internal19:
+    name: odoo19_internal
+    driver: bridge
+  proxy:
+    external: true
+    name: ${TRAEFIK_NETWORK:-proxy}
+
+volumes:
+  odoo19_db:
+    name: odoo19_db_data
+  odoo19_data:
+    name: odoo19_filestore

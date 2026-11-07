@@ -1,0 +1,71 @@
+# OdooInfrastructure - Traefik reverse proxy (entry point)
+# Run from /opt/OdooInfrastructure on Ubuntu (transferable).
+# Prerequisites: DNS points domains to this host, ports 80/443 open, .env configured.
+# This stack exposes ONLY 80/443. Do not expose Odoo/PostgreSQL ports.
+#
+# Validate (on Docker host): docker compose -f docker-compose.traefik.yml config
+# Start: docker compose -f docker-compose.traefik.yml up -d
+# Logs:  docker compose -f docker-compose.traefik.yml logs -f traefik
+
+services:
+  traefik:
+    image: traefik:v3.6.1
+    container_name: odoo-infra-traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "80:80"     # HTTP entrypoint (redirect to HTTPS)
+      - "443:443"   # HTTPS entrypoint
+      # Do NOT publish 8080/dashboard publicly. Use SSH tunnel if needed.
+    environment:
+      # Cloudflare DNS challenge token (store in .env; never commit)
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN:?Set CF_DNS_API_TOKEN in .env}
+    volumes:
+      # Docker socket for service discovery (read-only). Protect host access.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Dynamic file provider config (middlewares, redirects)
+      - ./traefik/dynamic:/dynamic:ro
+      # ACME certificate storage - must be chmod 600 on host
+      - ./traefik/acme/acme.json:/acme.json
+    networks:
+      - proxy
+    command:
+      # EntryPoints
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+
+      # Docker provider (auto-discover labels on proxy network)
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=${TRAEFIK_NETWORK:-proxy}"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+
+      # File provider for middlewares/dynamic config
+      - "--providers.file.directory=/dynamic"
+      - "--providers.file.watch=true"
+
+      # Dashboard/API - keep internal; no public router/port published
+      - "--api=true"
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+
+      # Observability
+      - "--log.level=INFO"
+      - "--accesslog=true"
+
+      # Let's Encrypt ACME (DNS challenge - suitable with Cloudflare)
+      - "--certificatesresolvers.${CERTSRESOLVER:-le}.acme.email=${LETSENCRYPT_EMAIL:?Set LETSENCRYPT_EMAIL in .env}"
+      - "--certificatesresolvers.${CERTSRESOLVER:-le}.acme.storage=/acme.json"
+      - "--certificatesresolvers.${CERTSRESOLVER:-le}.acme.dnschallenge=true"
+      - "--certificatesresolvers.${CERTSRESOLVER:-le}.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.${CERTSRESOLVER:-le}.acme.dnschallenge.delaybeforecheck=30"
+      - "--certificatesresolvers.${CERTSRESOLVER:-le}.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
+
+networks:
+  proxy:
+    name: ${TRAEFIK_NETWORK:-proxy}
+    driver: bridge

@@ -1,0 +1,21 @@
+# OdooInfrastructure local ignores (scoped to this folder)
+# Secrets - never commit real env files
+.env
+.env.*
+!.env.example
+!**/.env.traefik.example
+
+# Certificates / ACME storage (sensitive)
+traefik/acme/acme.json
+traefik/acme/*.json
+!traefik/acme/.gitkeep
+traefik/certs/*.pem
+traefik/certs/*.key
+!traefik/certs/.gitkeep
+
+# Runtime / local data
+*.log
+**/postgresql/
+**/__pycache__/
+**/*.pyc
+.DS_Store
