@@ -1617,10 +1617,10 @@ services:
       PGID: ${PGID}
     networks:
       - proxy
-    volumes:
-      - ~/ww/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ~/ww/data:/usr/local/apache2/htdocs/
-      - ~/shared:/shared
+volumes:
+       # - ~/ww/httpd.conf:/usr/local/apache2/conf/httpd.conf # Disabled: image path is a file, not directory
+       - ~/ww/data:/usr/local/apache2/htdocs/
+       - ~/shared:/shared
     labels:
       - "traefik.enable=true"
       # HTTPS router
