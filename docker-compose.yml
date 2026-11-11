@@ -536,7 +536,7 @@ services:
       - ./7dtd/ServerFiles:/home/sdtdserver/serverfiles/ # Optional - serverfiles folder
       - ./7dtd/log:/home/sdtdserver/log/ # Optional - Logs folder
       - ./7dtd/backups:/home/sdtdserver/lgsm/backup/ # Optional - If BAKCUP=NO, backups folder
-      - /home/alex/7dtd-shared/server_backup.sh:/home/sdtdserver/scripts/server_backup.sh # Custom 5AM "everything important" backup
+      # - /home/alex/7dtd-shared/server_backup.sh:/home/sdtdserver/scripts/server_backup.sh # Custom 5AM "everything important" backup (disabled: image path is a file, not directory)
     ports:
       - 26900:26900/tcp # Default game ports
       - 26900:26900/udp # Default game ports
@@ -592,7 +592,7 @@ services:
       - ./7dtde/ServerFiles:/home/sdtdserver/serverfiles/ # Optional - serverfiles folder
       - ./7dtde/log:/home/sdtdserver/log/ # Optional - Logs folder
       - ./7dtde/backups:/home/sdtdserver/lgsm/backup/ # Optional - If BAKCUP=NO, backups folder
-      - /home/alex/7dtd-shared/server_backup.sh:/home/sdtdserver/scripts/server_backup.sh # Custom 5AM "everything important" backup
+      # - /home/alex/7dtd-shared/server_backup.sh:/home/sdtdserver/scripts/server_backup.sh # Custom 5AM "everything important" backup (disabled: image path is a file, not directory)
     ports:
       - 26909:26909/tcp # Game port (ServerPort=26909)
       - 26909:26909/udp # Game port
