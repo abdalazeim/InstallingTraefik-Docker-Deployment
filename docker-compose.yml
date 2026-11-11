@@ -1146,30 +1146,30 @@ services:
   #     - "traefik.http.routers.bedrock.tls.certresolver=le"
   #     - "traefik.http.services.bedrock.loadbalancer.server.port=19132"
 
-  # minecraft - A open source game server management panel designed to be easy to use and easy to install.
-  minecraft:
-    hostname: minecraft
-    image: itzg/minecraft-server:latest
-    container_name: minecraft
-    restart: always
-    tty: true
-    stdin_open: true
-    ports:
-      - "25565:25565"
-      - "19134:19134/udp"
-    volumes:
-      - ~/minecraft:/data
-    environment:
-      TZ: ${TZ}
-      UID: ${PUID}
-      GID: ${PGID}
-      EULA: TRUE
-      TYPE: PAPER
-      MEMORY: 2G
-      INIT_MEMORY: 1G
-      MAX_MEMORY: 4G
-      MOTD: "Welcome to the Silver Moon Minecraft Server!"
-      SERVER_PORT: 25565
+# minecraft - A open source game server management panel designed to be easy to use and easy to install.
+   minecraft:
+     hostname: minecraft
+     image: itzg/minecraft-server:latest
+     container_name: minecraft
+     restart: always
+     tty: true
+     stdin_open: true
+     ports:
+       - "25570:25565"
+       - "19134:19134/udp"
+     volumes:
+       - ~/minecraft:/data
+     environment:
+       TZ: ${TZ}
+       UID: ${PUID}
+       GID: ${PGID}
+       EULA: TRUE
+       TYPE: PAPER
+       MEMORY: 2G
+       INIT_MEMORY: 1G
+       MAX_MEMORY: 4G
+       MOTD: "Welcome to the Silver Moon Minecraft Server!"
+       SERVER_PORT: 25565
       SERVER_NAME: "Sapulpa Server"
       GAMEMODE: survival
       DIFFICULTY: hard
