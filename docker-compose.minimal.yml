@@ -66,7 +66,7 @@ services:
 networks:
   proxy:
     external: true
-    name: proxy
+    name: traefik_proxy
 
 volumes:
   portainer-data:
