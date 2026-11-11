@@ -29,7 +29,8 @@ services:
       - "--accesslog=true"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.odoo-com`) || Host(`odoo-com`)"
+      # Dashboard router (default - matches any host)
+      - "traefik.http.routers.traefik.rule=Host(`traefik.odoo-com`) || Host(`odoo-com`) || Host(`192.168.74.68`) || Host(`localhost`)"
       - "traefik.http.routers.traefik.entrypoints=web"
       - "traefik.http.routers.traefik.service=api@internal"
 
@@ -41,7 +42,7 @@ services:
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.odoo-com`) || Host(`odoo-com`)"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.odoo-com`) || Host(`odoo-com`) || Host(`192.168.74.68`) || Host(`localhost`)"
       - "traefik.http.routers.whoami.entrypoints=web"
       - "traefik.http.routers.whoami.service=whoami"
       - "traefik.http.services.whoami.loadbalancer.server.port=80"
@@ -57,7 +58,7 @@ services:
       - portainer-data:/data
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.odoo-com`)"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.odoo-com`) || Host(`192.168.74.68`) || Host(`localhost`)"
       - "traefik.http.routers.portainer.entrypoints=web"
       - "traefik.http.routers.portainer.service=portainer"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
