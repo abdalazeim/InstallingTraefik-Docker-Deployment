@@ -64,7 +64,8 @@ services:
 
 networks:
   proxy:
-    driver: bridge
+    external: true
+    name: proxy
 
 volumes:
   portainer-data:

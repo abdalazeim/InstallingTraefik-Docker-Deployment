@@ -1,0 +1,6 @@
+
+http://portainer.odoo-com → Portainer UI
+http://whoami.odoo-com → Whoami info
+http://odoo-com/dashboard/ → Traefik Dashboard
+61.5 t/s
+
